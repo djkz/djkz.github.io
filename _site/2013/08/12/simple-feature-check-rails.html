@@ -1,0 +1,14 @@
+<h1 id='simple_feature_checking_with_rails'>Simple Feature Checking with Rails</h1>
+
+<p>In User Class</p>
+<div class='highlight'><pre><code class='ruby'><span class='k'>def</span> <span class='nf'>has_feature?</span><span class='p'>(</span><span class='n'>feature</span><span class='p'>)</span>
+    <span class='no'>HasFeature</span><span class='o'>.</span><span class='n'>send</span><span class='p'>(</span><span class='n'>feature</span><span class='p'>,</span> <span class='nb'>self</span><span class='p'>)</span>
+<span class='k'>end</span>
+</code></pre></div>
+<p>In HasFeature Class</p>
+<div class='highlight'><pre><code class='ruby'><span class='k'>class</span> <span class='nc'>HasFeature</span>
+    <span class='k'>def</span> <span class='nc'>self</span><span class='o'>.</span><span class='nf'>test</span><span class='p'>(</span><span class='n'>user</span><span class='p'>)</span>
+        <span class='n'>user</span><span class='o'>.</span><span class='n'>id</span> <span class='o'>%</span> <span class='mi'>2</span>
+    <span class='k'>end</span>
+<span class='k'>end</span>
+</code></pre></div>
