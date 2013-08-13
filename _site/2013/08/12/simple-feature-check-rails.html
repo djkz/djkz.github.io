@@ -1,14 +1,76 @@
-<h1 id='simple_feature_checking_with_rails'>Simple Feature Checking with Rails</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<meta name="description" content="djkz.github.io : Timur's Blog" />
 
-<p>In User Class</p>
-<div class='highlight'><pre><code class='ruby'><span class='k'>def</span> <span class='nf'>has_feature?</span><span class='p'>(</span><span class='n'>feature</span><span class='p'>)</span>
-    <span class='no'>HasFeature</span><span class='o'>.</span><span class='n'>send</span><span class='p'>(</span><span class='n'>feature</span><span class='p'>,</span> <span class='nb'>self</span><span class='p'>)</span>
-<span class='k'>end</span>
-</code></pre></div>
-<p>In HasFeature Class</p>
+<link rel="stylesheet" type="text/css" media="screen" href="/stylesheets/stylesheet.css">
+
+<title>Simple Feature Checking With Rails</title>
+
+  </head>
+  <body>
+    <div class="container">
+      
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+
+          <h1 id="project_title">djkz.github.io</h1>
+          <h2 id="project_tagline">Timur's Blog</h2>
+
+        </header>
+    </div>
+
+
+        <div id="main_content_wrap" class="outer">
+          <article id="main_content" class="inner">
+            <h1>Simple Feature Checking With Rails</h1>
+            <p>Posted on <time datetime="2013-08-12T00:00:00-06:00" pubdate>August 12, 2013</time></p>
+            <p>I needed to add something like <a href='https://github.com/bitlove/rollout'>rollout gem</a> to my project but wanted to keep it simple and without calls to redis. Basically what I needed is to check if particular user has access a specific feature from my app. Since devise and most other auth gems give us access to current_user helper, we have easy access to the user model throughout the app.</p>
+
+<p>Therefore having something like current_user.has_feature? :new_feature is usually sufficient for us, but we don&#8217;t want to check for features directly in the User class. To keep the feature logic separate we can add service class HasFeature and define all our feature checks inside that class:</p>
+
+<p><em>app/models/has_feature.rb</em></p>
 <div class='highlight'><pre><code class='ruby'><span class='k'>class</span> <span class='nc'>HasFeature</span>
-    <span class='k'>def</span> <span class='nc'>self</span><span class='o'>.</span><span class='nf'>test</span><span class='p'>(</span><span class='n'>user</span><span class='p'>)</span>
+    <span class='c1'># return true for half of the users</span>
+    <span class='k'>def</span> <span class='nc'>self</span><span class='o'>.</span><span class='nf'>new_feature</span><span class='p'>(</span><span class='n'>user</span><span class='p'>)</span>
         <span class='n'>user</span><span class='o'>.</span><span class='n'>id</span> <span class='o'>%</span> <span class='mi'>2</span>
     <span class='k'>end</span>
 <span class='k'>end</span>
 </code></pre></div>
+<p>In this example we want to roll out a feature to half of our users, so we can do a simple split based on user id. Now we can add a way to call it from the user class:</p>
+
+<p><em>app/models/user.rb</em></p>
+<div class='highlight'><pre><code class='ruby'><span class='k'>def</span> <span class='nf'>has_feature?</span><span class='p'>(</span><span class='n'>feature</span><span class='p'>)</span>
+    <span class='no'>HasFeature</span><span class='o'>.</span><span class='n'>send</span><span class='p'>(</span><span class='n'>feature</span><span class='p'>,</span> <span class='nb'>self</span><span class='p'>)</span>
+<span class='k'>end</span>
+</code></pre></div>
+<p>Now we will send the feature we are looking for and the user to our service class, which will tell us whenever user has the new feature.</p>
+          </article>
+        </div>
+      </div>
+      
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+  <footer class="inner">
+    <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+  </footer>
+</div>
+
+          <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+      <script type="text/javascript">
+        try {
+          var pageTracker = _gat._getTracker("UA-43033772-1");
+        pageTracker._trackPageview();
+        } catch(err) {}
+      </script>
+
+
+
+  </body>
+</html>

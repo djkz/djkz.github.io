@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include head.html %}
+  </head>
+  <body>
+    <div class="container">
+      {% include header.html %}
+        <div id="main_content_wrap" class="outer">
+          <article id="main_content" class="inner">
+            <h1>{{ page.title | escape }}</h1>
+            {% if page.date %}<p>Posted on <time datetime="{{ page.date | datetime | date_to_xmlschema }}" pubdate>{{ page.date | date: "%B %d, %Y" }}</time></p>{% endif %}
+            {{ content }}
+          </article>
+        </div>
+      </div>
+      {% include footer.html %}
+  </body>
+</html>
